@@ -72,11 +72,13 @@ def process_batch_images(model, img_folder, data_list, save_folder, seg_folder):
     
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--dataset_path", type=str, default="/home/gsy/repos/data/room1_wxl_3", help="Path to the dataset folder")
+    arg_parser.add_argument("--dataset_path", type=str, help="Path to the dataset folder")
     arg_parser.add_argument("--batch_size", type=int, default=2, help="Batch size for processing images")
+    arg_parser.add_argument("--seem_ckpt", type=str, help="Path to the SEEM checkpoint")
     args = arg_parser.parse_args()
     dataset_path = args.dataset_path
     batch_size = args.batch_size
+    pretrained_pth = args.seem_ckpt
     img_folder = os.path.join(dataset_path, 'images')
     data_list = os.listdir(img_folder)
     data_list.sort()
@@ -90,7 +92,6 @@ if __name__ == "__main__":
     cfg = parser.parse_args()
     opt = load_opt_from_config_files([cfg.conf_files])
     opt = init_distributed(opt)
-    pretrained_pth = os.path.join("seem_focall_v0.pt")
     model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).eval().cuda()
     with torch.no_grad():
         model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(COCO_PANOPTIC_CLASSES + ["background"], is_eval=True)
