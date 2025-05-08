@@ -20,7 +20,7 @@ from detectron2.data import MetadataCatalog
 
 def process_batch_images(model, img_folder, data_list, save_folder, seg_folder):
     device = model.model.device
-    image_oris = [np.asarray(Image.open(os.path.join(img_folder, p))) for p in data_list]
+    image_oris = [np.asarray(Image.open(os.path.join(img_folder, p)).convert("RGB")) for p in data_list]
     image_oris = np.stack(image_oris, axis=0)  # [B, H, W, 3] We assume all images are the same size
     B, H, W, _ = image_oris.shape
     images = [torch.from_numpy(x.copy()).permute(2,0,1).to(device) for x in image_oris]
