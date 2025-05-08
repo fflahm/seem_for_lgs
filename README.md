@@ -61,7 +61,7 @@
 
 - Modify SEEM codes
   - Copy `seem_for_lgs/batch_segmentation.py` to `Segment-Everything-Everywhere-All-At-Once/batch_segmentation.py`
-  - Replace ``Segment-Everything-Everywhere-All-At-Once/modeling/architectures/seem_model_demo.py` with `seem_for_lgs/seem_model_demo.py`
+  - Replace `Segment-Everything-Everywhere-All-At-Once/modeling/architectures/seem_model_demo.py` with `seem_for_lgs/seem_model_demo.py`
   - Replace `Segment-Everything-Everywhere-All-At-Once/modeling/interface/prototype/attention_data_struct_seemdemo.py` with `seem_for_lgs/attention_data_struct_seemdemo.py`
 
 ## Usage
