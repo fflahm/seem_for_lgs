@@ -61,6 +61,7 @@
 
 - Modify SEEM codes
   - Copy `seem_for_lgs/batch_segmentation.py` to `Segment-Everything-Everywhere-All-At-Once/batch_segmentation.py`
+  - Copy `seem_for_lgs/seem_encoding.py` to `Segment-Everything-Everywhere-All-At-Once/seem_encoding.py`
   - Replace `Segment-Everything-Everywhere-All-At-Once/modeling/architectures/seem_model_demo.py` with `seem_for_lgs/seem_model_demo.py`
   - Replace `Segment-Everything-Everywhere-All-At-Once/modeling/interface/prototype/attention_data_struct_seemdemo.py` with `seem_for_lgs/attention_data_struct_seemdemo.py`
 
@@ -80,3 +81,5 @@
 cd Segment-Everything-Everywhere-All-At-Once
 python batch_segmentation.py --dataset_path $DATASET --seem_ckpt $SEEMCKPT
 ```
+
+- For text encoding, see the example in `seem_encoding.py`
