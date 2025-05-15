@@ -72,7 +72,7 @@ def visualize_scores(image_ori, scores, seg):
 
 if __name__ == "__main__":
     path_s = "seem_for_lgs/demo/s.npy"
-    path_f = "seem_for_lgs/demo/s.npy"
+    path_f = "seem_for_lgs/demo/f.npy"
     image_ori = Image.open("seem_for_lgs/demo/ori.png").convert("RGB")
     image_ref = Image.open("seem_for_lgs/demo/sofa_ref.png").convert("RGB")
     seg = np.load(path_s)[0] # [H, W]
