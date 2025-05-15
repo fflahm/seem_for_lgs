@@ -20,7 +20,7 @@ from detectron2.data import MetadataCatalog
 
 def process_batch_images(model, img_folder, data_list, save_folder, seg_folder):
     device = model.model.device
-    image_oris = [np.asarray(Image.open(os.path.join(img_folder, p)).convert("RGB")) for p in data_list]
+    image_oris = [np.asarray(Image.open(os.path.join(img_folder, p)).convert('RGB')) for p in data_list]
     image_oris = np.stack(image_oris, axis=0)  # [B, H, W, 3] We assume all images are the same size
     B, H, W, _ = image_oris.shape
     images = [torch.from_numpy(x.copy()).permute(2,0,1).to(device) for x in image_oris]
@@ -44,9 +44,10 @@ def process_batch_images(model, img_folder, data_list, save_folder, seg_folder):
         pred_masks = pred_masks_results[i]  # [Q, h, w]
         pred_masks = sem_seg_postprocess(pred_masks, (H, W), H, W) # [Q, H, W]
 
-        cls_masks = outputs['pred_logits'][i]  # [Q, C]
-        v_emb = outputs['pred_captions'][i]    # [Q, d]
-        v_emb = v_emb / (v_emb.norm(dim=-1, keepdim=True) + 1e-7)
+        cls_masks = outputs['pred_logits'][i]  # [Q, C])
+        v_emb = outputs['pred_primitives'][i]  # [Q, d]
+        # v_emb = outputs['pred_captions'][i]    # [Q, d]
+        # v_emb = v_emb / (v_emb.norm(dim=-1, keepdim=True) + 1e-7)
 
         panoptic_results = model.model.panoptic_inference(cls_masks, pred_masks)
         # panoptic_results[0] [H, W] int for segmentation/query/instance id filtered
@@ -71,15 +72,12 @@ def process_batch_images(model, img_folder, data_list, save_folder, seg_folder):
     del outputs
     
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser('SEEM Demo', add_help=False)
-    parser.add_argument('--conf_files', default="configs/seem/focall_unicl_lang_demo.yaml", metavar="FILE", help='path to config file', )
-    parser.add_argument("--dataset_path", type=str, help="Path to the dataset folder")
-    parser.add_argument("--batch_size", type=int, default=2, help="Batch size for processing images")
-    parser.add_argument("--seem_ckpt", type=str, help="Path to the SEEM checkpoint")
-    cfg = parser.parse_args()
-    dataset_path = cfg.dataset_path
-    batch_size = cfg.batch_size
-    pretrained_pth = cfg.seem_ckpt
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument("--dataset_path", type=str, default="/8TBHDD1/gsy/data_mine/data/room1_test", help="Path to the dataset folder")
+    arg_parser.add_argument("--batch_size", type=int, default=2, help="Batch size for processing images")
+    args = arg_parser.parse_args()
+    dataset_path = args.dataset_path
+    batch_size = args.batch_size
     img_folder = os.path.join(dataset_path, 'images')
     data_list = os.listdir(img_folder)
     data_list.sort()
@@ -88,8 +86,12 @@ if __name__ == "__main__":
     seg_folder = os.path.join(dataset_path, 'seem_results')
     os.makedirs(seg_folder, exist_ok=True)
 
+    parser = argparse.ArgumentParser('SEEM Demo', add_help=False)
+    parser.add_argument('--conf_files', default="configs/seem/focall_unicl_lang_demo.yaml", metavar="FILE", help='path to config file', )
+    cfg = parser.parse_args()
     opt = load_opt_from_config_files([cfg.conf_files])
     opt = init_distributed(opt)
+    pretrained_pth = os.path.join("seem_focall_v0.pt")
     model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).eval().cuda()
     with torch.no_grad():
         model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(COCO_PANOPTIC_CLASSES + ["background"], is_eval=True)
