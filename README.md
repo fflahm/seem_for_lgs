@@ -66,7 +66,7 @@
   - Replace `Segment-Everything-Everywhere-All-At-Once/modeling/architectures/seem_model_demo.py` with `seem_for_lgs/patches/seem_model_demo.py`
   - Replace `Segment-Everything-Everywhere-All-At-Once/modeling/interface/prototype/attention_data_struct_seemdemo.py` with `seem_for_lgs/patches/attention_data_struct_seemdemo.py`
 
-## Usage
+## Usage: Batch Segmentation
 
 - Make sure path `$DATASET` is like:
 
@@ -83,4 +83,6 @@ cd Segment-Everything-Everywhere-All-At-Once
 python batch_segmentation.py --dataset_path $DATASET --seem_ckpt $SEEMCKPT
 ```
 
-- For text encoding, see the example in `seem_encoding.py`
+## Usage: Query with Text or Image
+
+- See examples in `seem_query.py` to make use of `query_with_text` and `query_with_image`.
